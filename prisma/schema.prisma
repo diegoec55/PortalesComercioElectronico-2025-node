@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model categorias {
+  id        Int         @id @default(autoincrement())
+  nombre    String      @unique @db.VarChar(100)
+  productos productos[]
+}
+
+model etiquetas {
+  id                Int                 @id @default(autoincrement())
+  nombre            String              @unique @db.VarChar(100)
+  productos productos[]
+}
+
+model items {
+  id              Int        @id @default(autoincrement())
+  orden_id        Int?
+  producto_id     Int?
+  cantidad        Int
+  precio_unitario Decimal    @db.Decimal(10, 2)
+  orden         ordenes?   @relation(fields: [orden_id], references: [id])
+  producto       productos? @relation(fields: [producto_id], references: [id])
+
+  @@unique([orden_id, producto_id])
+}
+
+model ordenes {
+  id         Int       @id @default(autoincrement())
+  usuario_id Int
+  total      Decimal   @db.Decimal(10, 2)
+  estado     String?   @default("pendiente") @db.VarChar(50)
+  items      items[]
+  usuario   usuarios? @relation(fields: [usuario_id], references: [id])
+}
+
+
+
+model productos {
+  id                Int                 @id @default(autoincrement())
+  nombre            String              @db.VarChar(255)
+  slug              String              @unique @db.VarChar(255)
+  categoria_id      Int?
+  precio            Decimal             @db.Decimal(10, 2)
+  descripcion       String?
+  imagen_url        String?             @db.VarChar(255)
+  items             items[]
+  etiquetas etiquetas[]
+  categorias        categorias?         @relation(fields: [categoria_id], references: [id])
+}
+
+model usuarios {
+  id       Int       @id @default(autoincrement())
+  nombre   String    @db.VarChar(255)
+  email    String    @unique @db.VarChar(255)
+  clave    String    @db.VarChar(255)
+  es_admin Boolean?  @default(false)
+  ordenes  ordenes[]
+}
