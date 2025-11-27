@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Producto</title>
+    <link rel="stylesheet" href="./css/product-edit.css">
+</head>
+
+<body>
+
+    <h1>Nuevo Productos</h1>
+
+    <form id="formProducto" enctype="multipart/form-data">
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
+        <input type="text" id="slug" name="slug" placeholder="Slug" required>
+        <textarea id="descripcion" name="descripcion" placeholder="Descripción" required></textarea>
+        <input type="number" id="precio" name="precio" placeholder="Precio" required>
+
+        <input type="file" id="imagen" name="imagen" accept="image/*">
+
+        <button type="submit">Agregar</button>
+    </form>
+
+    <script src="/js/product-create.js"></script>
+</body>
+
+</html>

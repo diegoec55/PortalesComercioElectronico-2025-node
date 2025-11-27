@@ -1,20 +1,38 @@
-const productos = [
-    { nombre: "Star Wars", categoria: "peliculas" },
-    { nombre: "The Office", categoria: "series" },
-    { nombre: "Rock Nacional", categoria: "musica" }
-];
-
+let productos = [];
 const contenedor = document.getElementById("productos");
 const busqueda = document.getElementById("busqueda");
 const categoria = document.getElementById("categoria");
 
+
+async function cargarProductos() {
+    const res = await fetch("http://localhost:3000/api/productos/");  
+    productos = await res.json();
+
+    console.log(JSON.stringify(productos,null,4));
+    
+    mostrarProductos(productos);
+}
+
 function mostrarProductos(lista) {
     contenedor.innerHTML = "";
     lista.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "card";
-        div.textContent = p.nombre;
-        contenedor.appendChild(div);
+        const link = document.createElement("a");
+
+        link.href = `/product-detail.html?slug=${p.slug}`;  // BUSCAR slug
+        link.className = "card";
+
+        const img = document.createElement("img");
+        img.src = p.imagen_url;
+
+        const nombre = document.createElement("h3");
+        nombre.textContent = p.nombre;
+
+        const precio = document.createElement("p");
+        precio.textContent = `$${p.precio}`;
+        link.appendChild(img);
+        link.appendChild(nombre);
+        link.appendChild(precio);
+        contenedor.appendChild(link);
     });
 }
 
@@ -31,4 +49,4 @@ function filtrar() {
     mostrarProductos(filtrados);
 }
 
-mostrarProductos(productos);
+cargarProductos()

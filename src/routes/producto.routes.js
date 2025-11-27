@@ -14,13 +14,13 @@ const router = Router();
 router.get("/", list);
 router.get("/:slug", get);
 router.post("/",
-    [isAdmin, upload.any()],
+    upload.any(),
     create);
 router.put("/:slug",
     [isAdmin, upload.any()],
     update);
 router.delete("/:slug",
-    [isAdmin],
+    
     remove);
 
 export default router;

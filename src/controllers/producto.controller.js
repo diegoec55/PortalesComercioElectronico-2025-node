@@ -89,7 +89,8 @@ export async function create(req, res) {
             precio: parseFloat(data.precio),
             categoria_id: parseInt(categoria_id),
             imagen_url: files ? `/uploads/${files[0].filename}` : null,
-            etiquetas: { set: etiquetaIds || [] },
+            etiquetas: {connect: etiquetaIds}
+            // etiquetas: { set: etiquetaIds || [] },
         },
         include: {
             categorias: true,

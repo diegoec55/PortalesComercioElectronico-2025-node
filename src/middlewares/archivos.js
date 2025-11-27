@@ -5,10 +5,10 @@ import { fileURLToPath } from "url";
 import multer from "multer";
 
 // Configuración de Multer para almacenar los archivos en la carpeta 'uploads'
-const storage = multer.diskStorage({
+const storage = multer.diskStorage({ //guardamos en el alamcenamiento local
     destination: function (req, file, cb) {
         const path = join(
-            __dirname,
+            dirname(fileURLToPath(import.meta.url)),
             "../../public/uploads"
         );
         // Crear la carpeta si no existe

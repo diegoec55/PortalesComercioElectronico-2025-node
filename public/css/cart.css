@@ -1,0 +1,22 @@
+body {
+    font-family: Arial;
+    text-align: center;
+}
+
+h1 {
+    color: white;
+    border-radius: 8px;
+    margin: 0;
+    padding: 15px;
+    background-color: #222;
+}
+
+.item {
+    border: 1px solid #ccc;
+    margin: 10px;
+    padding: 10px;
+}
+
+button {
+    margin: 5px;
+}

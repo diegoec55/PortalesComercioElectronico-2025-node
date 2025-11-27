@@ -96,7 +96,7 @@ export async function create(req, res) {
         },
     });
 
-    res.send({ selectOrder });
+    res.send({ selectOrder }); //el send lo pasa como un json
 }
 
 // ---------------------------------------------------------
@@ -124,5 +124,5 @@ export async function remove(req, res) {
     await prisma.ordenes.delete({
         where: { id: Number(id) },
     });
-    return res.send({ deleted: true });
+    return res.send({ deleted: true }); //el send lo pasa como un json
 }

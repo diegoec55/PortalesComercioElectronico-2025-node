@@ -1,0 +1,29 @@
+body {
+    font-family: Arial;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+}
+
+button {
+    background: #ff7b00;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+a {
+    background-color: #ccc;
+    text-decoration: none;
+    padding: 15px;
+    border: 1px solid;
+    border-radius: 8px;
+}
+
+img {
+    max-width: 25%;
+}
