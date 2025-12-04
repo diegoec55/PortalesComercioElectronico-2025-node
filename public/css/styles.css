@@ -10,11 +10,10 @@ header {
     background-color: #545d66;
     color: white;
     text-align: center;
-    padding: 20px 0 0 0;
+    padding: 20px;
 }
 
 h1 {
-    margin: 0;
     font-size: 2.5em;
     text-transform: uppercase;
 }
@@ -43,8 +42,10 @@ h1 {
 }
 
 .main-nav a:hover {
-    background-color: #555;
+    /* background-color: #555; */
     color: #ffc107;
+    border-bottom: solid 2px;
+    padding-bottom: 8px;
 }
 
 .categories {
@@ -178,6 +179,11 @@ footer {
         padding: 20px;
         display: flex;
         width: 100%;
+    }
+
+    .main-nav a:hover {
+        background-color: #555;
+        color: #ffc107;
     }
 
     .buttonNavContainerx {
