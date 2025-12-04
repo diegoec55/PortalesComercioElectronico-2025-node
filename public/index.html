@@ -4,23 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StickerMania - Tu Tienda de Stickers</title>
+    <link href='https://cdn.boxicons.com/3.0.6/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
 
     <header>
+        <div class="buttonNavContainer">
+            <button id="abrir" class="buttonNav"><i class='bxr  bx-menu' style="font-size: 2.5rem;color:white;"></i></button>
+        </div>
+        <nav class="main-nav" id="nav">
+            <div class="buttonNavContainerX">
+                <button id="cerrar" class="buttonNavX"><i class='bxr  bx-x' style="font-size: 2.5rem;color:white;"></i> </button>
+            </div>
+            <a href="product.html">Catálogo</a>
+            <a href="cart.html">Carrito</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Registro</a>
+            <a href="product-create.html">Nuevo Producto</a>
+            <a href="user-create.html">Nuevo Usuario</a>
+        </nav>
         <h1>StickerMania</h1>
         <p>¡Decora tu vida con nuestros stickers únicos!</p>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="product.html">Catálogo</a></li>
-                <li><a href="cart.html">Carrito</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Registro</a></li>
-                <li><a href="product-create.html">Nuevo Producto</a></li>
-                <li><a href="user-create.html">Nuevo Usuario</a></li>
-            </ul>
-        </nav>
     </header>
 
     <nav class="categories">
