@@ -10,12 +10,25 @@
 <body>
 
     <header>
-        <h1>Catálogo de Stickers</h1>
-        <nav>
+        <div class="buttonNavContainer">
+            <button id="abrir" class="buttonNav"><i class='bxr  bx-menu' style="font-size: 2.5rem;color:white;"></i></button>
+        </div>
+        <nav class="main-nav" id="nav">
+            <div class="buttonNavContainerX">
+                <button id="cerrar" class="buttonNavX"><i class='bxr  bx-x' style="font-size: 2.5rem;color:white;"></i> </button>
+            </div>
             <a href="index.html">Inicio</a>
+            <a href="cart.html">Carrito</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Registro</a>
+            <a href="product-create.html">Nuevo Producto</a>
+            <a href="user-create.html">Nuevo Usuario</a>
         </nav>
+        <h1 class="titleIndex">StickerMania</h1>
+        <p>¡Decora tu vida con nuestros stickers únicos!</p>
     </header>
-
+    
+    <h1>Catálogo de Stickers</h1>
     <main>
         <input type="text" id="busqueda" placeholder="Buscar producto...">
         <select id="categoria">
