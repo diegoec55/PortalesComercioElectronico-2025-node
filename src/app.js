@@ -1,8 +1,7 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const { join } = require("path");
 
 const app = express();
 
@@ -14,12 +13,12 @@ app.use(express.json()); // Parsea peticiones con body application/json
 app.use(express.urlencoded({ extended: false })); // Parsea peticiones con body y query
 
 // Archivos estáticos de la carpera public disponible para todos
-app.use(express.static(join(dirname(fileURLToPath(import.meta.url)), "../public")));
+app.use(express.static(join(__dirname, "../public")));
 
 // Rutas
-import productoRoutes from "./routes/producto.routes.js";
-import usuarioRoutes from "./routes/usuario.routes.js";
-import comprasRoutes from "./routes/compras.routes.js";
+const productoRoutes = require("./routes/producto.routes");
+const usuarioRoutes = require("./routes/usuario.routes");
+const comprasRoutes = require("./routes/compras.routes");
 
 app.use("/api/productos", productoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
