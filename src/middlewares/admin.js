@@ -1,20 +1,26 @@
 // Verifica si el usuario tiene rol de administrador
-import { PrismaClient } from "../generated/prisma/client.js";
+const prisma = require("../config/prisma");
 
-export async function isAdmin(req, res, next) {
+async function isAdmin(req, res, next) {
     const auth = req.headers["Authorization"] || req.headers["authorization"];
-    if (!auth) return res.status(401).send({ error: "No autorizado" });
 
-    const prisma = new PrismaClient();
+    if (!auth) {
+        return res.status(401).send({ error: "No autorizado" });
+    }
+
     const user = await prisma.usuarios.findUnique({
         where: { id: Number(auth) },
     });
 
-    if (!user) return res.status(401).send({ error: "Usuario no encontrado" });
-    
+    if (!user) {
+        return res.status(401).send({ error: "Usuario no encontrado" });
+    }
+
     if (!user.es_admin) {
         return res.status(403).send({ error: "Acceso denegado" });
     }
 
     return next();
 }
+
+module.exports = {isAdmin,};
