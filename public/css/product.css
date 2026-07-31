@@ -49,28 +49,6 @@ h1 {
     padding-bottom: 8px;
 }
 
-.categories h2 {
-    margin-top: 0;
-}
-
-.categories ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.categories a {
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.categories a:hover {
-    color: red;
-}
-
 .product-grid {
     max-width: 100%;
     padding: 20px;
