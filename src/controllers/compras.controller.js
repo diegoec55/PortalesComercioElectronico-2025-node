@@ -1,13 +1,13 @@
-import { PrismaClient } from "../generated/prisma/client.js";
-const prisma = new PrismaClient();
+const prisma = require("../config/prisma");
 
 // ---------------------------------------------------------
-export async function list(req, res) {
+async function list(req, res) {
     let page = req?.query?.page || 1;
     let limit = req?.query?.limit || 10;
     page = parseInt(page);
     limit = parseInt(limit);
     const offset = (page - 1) * limit;
+
     const ordenes = await prisma.ordenes.findMany({
         include: {
             items: {
@@ -20,12 +20,14 @@ export async function list(req, res) {
         skip: offset,
         take: limit,
     });
+
     return res.status(200).send({ data: ordenes });
 }
 
 // ---------------------------------------------------------
-export async function get(req, res) {
+async function get(req, res) {
     const { id } = req.params;
+
     const orden = await prisma.ordenes.findUnique({
         where: { id: Number(id) },
         include: {
@@ -37,14 +39,18 @@ export async function get(req, res) {
             usuario: true,
         },
     });
+
     if (!orden) {
-        return res.status(404).send({ msg: "Compra no encontrada", error: true });
+        return res
+            .status(404)
+            .send({ msg: "Compra no encontrada", error: true });
     }
+
     return res.status(200).send({ data: orden });
 }
 
 // ---------------------------------------------------------
-export async function create(req, res) {
+async function create(req, res) {
     const data = req.body;
 
     if (!data.usuario || !data.items || data.items.length === 0) {
@@ -58,7 +64,11 @@ export async function create(req, res) {
             const producto = await prisma.productos.findUnique({
                 where: { id: item.producto_id },
             });
-            return { ...producto, cantidad: item.cantidad };
+
+            return {
+                ...producto,
+                cantidad: item.cantidad,
+            };
         })
     );
 
@@ -100,9 +110,10 @@ export async function create(req, res) {
 }
 
 // ---------------------------------------------------------
-export async function update(req, res) {
+async function update(req, res) {
     const { id } = req.params;
     const data = req.body;
+
     const update = await prisma.ordenes.update({
         where: { id: Number(id) },
         data,
@@ -115,14 +126,25 @@ export async function update(req, res) {
             usuario: true,
         },
     });
+
     res.send({ update });
 }
 
 // ---------------------------------------------------------
-export async function remove(req, res) {
+async function remove(req, res) {
     const { id } = req.params;
+
     await prisma.ordenes.delete({
         where: { id: Number(id) },
     });
+
     return res.send({ deleted: true }); //el send lo pasa como un json
 }
+
+module.exports = {
+    list,
+    get,
+    create,
+    update,
+    remove,
+};
