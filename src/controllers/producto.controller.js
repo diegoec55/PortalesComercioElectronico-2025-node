@@ -10,7 +10,7 @@ async function list(req, res) {
 
     const products = await prisma.productos.findMany({
         where: {
-            AND: [
+            OR: [
                 { nombre: { contains: req?.query?.search ?? "" } },
                 { descripcion: { contains: req?.query?.search ?? "" } },
             ],
