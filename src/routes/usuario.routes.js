@@ -1,10 +1,14 @@
-import { Router } from "express";
-import { access, save, profile } from "../controllers/usuario.controller.js";
+const express = require("express");
+const router = express.Router();
 
-const router = Router();
+const {
+    access,
+    save,
+    profile
+} = require("../controllers/usuario.controller");
 
 router.get("/:id", profile);
 router.post("/", save);
 router.post("/access", access);
 
-export default router;
+module.exports = router;

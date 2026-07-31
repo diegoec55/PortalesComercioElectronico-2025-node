@@ -1,26 +1,28 @@
-import { Router } from "express";
-import {
+const express = require("express");
+const router = express.Router();
+
+const {
     list,
     get,
     create,
     update,
     remove,
-} from "../controllers/producto.controller.js";
-import upload from "../middlewares/archivos.js";
-import { isAdmin } from "../middlewares/admin.js";
+} = require("../controllers/producto.controller");
 
-const router = Router();
+const upload = require("../middlewares/archivos");
+const { isAdmin } = require("../middlewares/admin");
 
 router.get("/", list);
 router.get("/:slug", get);
 router.post("/",
     upload.any(),
     create);
+
 router.put("/:slug",
     [isAdmin, upload.any()],
     update);
+
 router.delete("/:slug",
-    
     remove);
 
-export default router;
+module.exports = router;
