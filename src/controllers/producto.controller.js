@@ -1,13 +1,13 @@
-import { PrismaClient } from "../generated/prisma/client.js";
-const prisma = new PrismaClient();
+const prisma = require("../config/prisma");
 
 // ---------------------------------------------------------
-export async function list(req, res) {
+async function list(req, res) {
     let page = req?.query?.page || 1;
     let limit = req?.query?.limit || 10;
     page = parseInt(page);
     limit = parseInt(limit);
     const offset = (page - 1) * limit;
+
     const products = await prisma.productos.findMany({
         where: {
             AND: [
@@ -19,15 +19,17 @@ export async function list(req, res) {
             categorias: true,
             etiquetas: true,
         },
-        skip: offset, //cuantos tomamos por pagina
-        take: limit, //cuanto nos saltamos, del 0 a 5
+        skip: offset, // cuantos tomamos por pagina
+        take: limit, // cuanto nos saltamos, del 0 a 5
     });
-    return res.send(products); //el send lo pasa como un json
+
+    return res.send(products); // el send lo pasa como un json
 }
 
 // ---------------------------------------------------------
-export async function get(req, res) {
+async function get(req, res) {
     const { slug } = req.params;
+
     const product = await prisma.productos.findUnique({
         where: { slug: slug },
         include: {
@@ -35,14 +37,16 @@ export async function get(req, res) {
             etiquetas: true,
         },
     });
+
     if (!product) {
         return res.status(404).send({ msg: "Producto no encontrado" });
     }
-    return res.send(product); //el send lo pasa como un json
+
+    return res.send(product); // el send lo pasa como un json
 }
 
 // ---------------------------------------------------------
-export async function create(req, res) {
+async function create(req, res) {
     const data = req.body;
     const files = req.files;
 
@@ -60,27 +64,32 @@ export async function create(req, res) {
                 nombre: data.categoria,
             },
         });
+
         categoria_id = nuevaCategoria.id;
     }
 
     // Asignar etiquetas si se proporcionan
 
     let etiquetaIds = [];
+
     if (data["etiquetas"] && Array.isArray(data["etiquetas"])) {
         for (const etiqueta of data["etiquetas"]) {
             let select = await prisma.etiquetas.findUnique({
                 where: { nombre: etiqueta.trim() },
             });
+
             if (!select) {
                 select = await prisma.etiquetas.create({
                     data: { nombre: etiqueta.trim() },
                 });
             }
+
             etiquetaIds.push({ id: select.id });
         }
     }
 
     // Crear el producto
+
     const newProduct = await prisma.productos.create({
         data: {
             nombre: data.nombre,
@@ -89,7 +98,7 @@ export async function create(req, res) {
             precio: parseFloat(data.precio),
             categoria_id: parseInt(categoria_id),
             imagen_url: files ? `/uploads/${files[0].filename}` : null,
-            etiquetas: {connect: etiquetaIds}
+            etiquetas: { connect: etiquetaIds },
             // etiquetas: { set: etiquetaIds || [] },
         },
         include: {
@@ -102,7 +111,7 @@ export async function create(req, res) {
 }
 
 // ---------------------------------------------------------
-export async function update(req, res) {
+async function update(req, res) {
     const { slug } = req.params;
     const data = req.body;
     const files = req.files;
@@ -121,22 +130,26 @@ export async function update(req, res) {
                 nombre: data.categoria,
             },
         });
+
         categoria_id = nuevaCategoria.id;
     }
 
     // Asignar etiquetas si se proporcionan
 
     let etiquetaIds = [];
+
     if (data["etiquetas"] && Array.isArray(data["etiquetas"])) {
         for (const etiqueta of data["etiquetas"]) {
             let select = await prisma.etiquetas.findUnique({
                 where: { nombre: etiqueta.trim() },
             });
+
             if (!select) {
                 select = await prisma.etiquetas.create({
                     data: { nombre: etiqueta.trim() },
                 });
             }
+
             etiquetaIds.push({ id: select.id });
         }
     }
@@ -163,14 +176,25 @@ export async function update(req, res) {
             etiquetas: true,
         },
     });
+
     res.send(upProduct);
 }
 
 // ---------------------------------------------------------
-export async function remove(req, res) {
+async function remove(req, res) {
     const { slug } = req.params;
+
     await prisma.productos.delete({
         where: { slug: slug },
     });
+
     res.send({ deleted: true });
 }
+
+module.exports = {
+    list,
+    get,
+    create,
+    update,
+    remove,
+};
