@@ -11,16 +11,16 @@
 
 <body>
 
-    <header>
+    <header role="banner">
         <div class="buttonNavContainer">
-            <button id="abrir" class="buttonNav" aria-label="Abrir menú">
+            <button id="abrir" class="buttonNav" aria-label="Abrir menú" aria-expanded="false">
                 <i class='bxr  bx-menu' style="font-size: 2.5rem;color:white;"></i>
             </button>
         </div>
 
         <h1>StickerMania</h1>
 
-        <nav class="main-nav" id="nav">
+        <nav class="main-nav" id="nav" aria-label="Menú principal">
             <div class="buttonNavContainerX">
                 <button id="cerrar" class="buttonNavX" aria-label="Cerrar menú">
                     <i class='bxr  bx-x' style="font-size: 2.5rem;color:white;"></i>
@@ -28,8 +28,9 @@
             </div>
             <a href="product.html">Catálogo</a>
             <a href="cart.html">Carrito</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Registro</a>
+            <a href="login.html" id="loginLink">Login</a>
+            <a href="register.html" id="registerLink">Registro</a>
+            <a href="#" id="logoutLink" hidden>Cerrar sesión</a>
         </nav>
     </header>
 
