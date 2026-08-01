@@ -12,6 +12,7 @@ const slug = params.get("slug");
 
 const main = document.getElementById("detalleProducto");
 
+//-------------------------------------------------------------
 async function cargarProducto() {
     try {
         const producto = await sendQuery(`/api/productos/${slug}`);
@@ -23,6 +24,7 @@ async function cargarProducto() {
 
 }
 
+//-------------------------------------------------------------
 function mostrarProducto(producto) {
     main.innerHTML = `
         <article class="detalle">
@@ -48,6 +50,7 @@ function mostrarProducto(producto) {
     }
 }
 
+//-------------------------------------------------------------
 function agregarCarrito() {
     let carrito = getCart();
     const existe = carrito.find(item => item.slug === slug);
@@ -64,6 +67,7 @@ function agregarCarrito() {
     alert("Producto agregado al carrito.");
 }
 
+//-------------------------------------------------------------
 async function eliminarProducto() {
 
     if (!confirm("¿Eliminar el producto?")) {

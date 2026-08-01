@@ -1,4 +1,7 @@
 import { sendQuery, currency, isLogged, isAdmin } from "./helpers.js";
+import { initLayout, initMenu } from "./layout.js";
+
+initLayout();
 
 const contenedor = document.getElementById("productos");
 const busqueda = document.getElementById("busqueda");
@@ -65,19 +68,7 @@ busqueda.addEventListener("input", filtrar);
 categoria.addEventListener("change", filtrar);
 
 //-------------------menuHambur
-const nav = document.getElementById("nav");
-const abrir = document.getElementById("abrir");
-const cerrar = document.getElementById("cerrar");
-
-abrir.addEventListener("click", () => {
-    nav.classList.add("visible");
-    abrir.setAttribute("aria-expanded", "true");
-});
-
-cerrar.addEventListener("click", () => {
-    nav.classList.remove("visible");
-    abrir.setAttribute("aria-expanded", "false");
-});
+initMenu();
 
 //-------------------cargaCateg
 async function cargarCategorias() {
