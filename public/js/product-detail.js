@@ -60,6 +60,7 @@ function agregarCarrito() {
         existe.cantidad++;
     } else {
         carrito.push({
+            id: producto.id,
             slug: producto.slug,
             nombre: producto.nombre,
             precio: producto.precio,
