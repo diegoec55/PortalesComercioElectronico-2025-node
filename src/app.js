@@ -20,10 +20,12 @@ app.use(express.static(join(__dirname, "../public")));
 const productoRoutes = require("./routes/producto.routes");
 const usuarioRoutes = require("./routes/usuario.routes");
 const comprasRoutes = require("./routes/compras.routes");
+const categoriaRouter = require("./routers/categoria.router");
 
 app.use("/api/productos", productoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/compras", comprasRoutes);
+app.use("/api/categorias", categoriaRouter);
 
 // ruta principal
 app.get('/', (req, res) => {

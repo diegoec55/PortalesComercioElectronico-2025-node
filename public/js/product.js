@@ -34,11 +34,11 @@ function mostrarProductos(lista) {
 
         card.innerHTML = `
             <img
-                src="${producto.imagen_url ?? "./assets/no-image.png"}"
+                src="${producto.imagen_url || "./assets/no-image.png"}"
                 alt="${producto.nombre}"
             >
             <h3>${producto.nombre}</h3>
-            <p>${currency(producto.precio)}</p>
+            <p class="precio">${currency(producto.precio)}</p>
             <small>
                 ${producto.categorias?.nombre ?? "Sin categoría"}
             </small>
@@ -84,10 +84,10 @@ async function cargarCategorias() {
     try {
         const categorias = await sendQuery("/api/categorias");
     
-        categorias.forEach(categoria => {
+        categorias.forEach(cat => {
             const option = document.createElement("option");
-            option.value = categoria.nombre;
-            option.textContent = categoria.nombre;
+            option.value = cat.nombre;
+            option.textContent = cat.nombre;
 
             categoria.appendChild(option);
         });
@@ -97,5 +97,7 @@ async function cargarCategorias() {
     }
 }
 
-await cargarCategorias();
-await cargarProductos();
+document.addEventListener("DOMContentLoaded", async () => {
+    await cargarCategorias();
+    await cargarProductos();
+});
