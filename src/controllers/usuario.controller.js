@@ -29,7 +29,14 @@ async function access(req, res) {
             .send({ msg: "Clave incorrecta", error: true });
     }
 
-    return res.status(200).send({ data: user });
+    return res.status(200).send({
+        data: {
+            id: user.id,
+            nombre: user.nombre,
+            email: user.email,
+            es_admin: user.es_admin,
+        },
+    });
 }
 
 // ---------------------------------------------------------

@@ -25,6 +25,11 @@ app.use("/api/productos", productoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/compras", comprasRoutes);
 
+// ruta principal
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'))
+})
+
 app.listen(app.get("port"), () => {
     console.log(
         `Servidor iniciado en http://localhost:${app.get("port")}`

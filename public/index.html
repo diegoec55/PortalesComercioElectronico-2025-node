@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,66 +8,71 @@
     <link href='https://cdn.boxicons.com/3.0.6/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
 
     <header>
         <div class="buttonNavContainer">
-            <button id="abrir" class="buttonNav"><i class='bxr  bx-menu' style="font-size: 2.5rem;color:white;"></i></button>
+            <button id="abrir" class="buttonNav" aria-label="Abrir menú">
+                <i class='bxr  bx-menu' style="font-size: 2.5rem;color:white;"></i>
+            </button>
         </div>
+
+        <h1>StickerMania</h1>
+
         <nav class="main-nav" id="nav">
             <div class="buttonNavContainerX">
-                <button id="cerrar" class="buttonNavX"><i class='bxr  bx-x' style="font-size: 2.5rem;color:white;"></i> </button>
+                <button id="cerrar" class="buttonNavX" aria-label="Cerrar menú">
+                    <i class='bxr  bx-x' style="font-size: 2.5rem;color:white;"></i>
+                </button>
             </div>
             <a href="product.html">Catálogo</a>
             <a href="cart.html">Carrito</a>
             <a href="login.html">Login</a>
             <a href="register.html">Registro</a>
-            <a href="product-create.html">Nuevo Producto</a>
-            <a href="user-create.html">Nuevo Usuario</a>
         </nav>
-        <h1 class="titleIndex">StickerMania</h1>
-        <p>¡Decora tu vida con nuestros stickers únicos!</p>
     </header>
 
-    <div class="hero-section">
-        <div class="heroTextContainer">
-            <h2 class="heroTitle">El toque perfecto para tus cosas favoritas</h2>
-            <h3 class="heroText">Stickers ilustrados con amor para decorar tu laptop, cuadernos y todo lo que te inspira. ¡Cada detalle cuenta!</h3>
-        </div>
-        <img id="hero-img" src="" alt="Hero Random">
-        <a href="product.html" class="btn">Ver productos</a>
-        <img id="hero-img2" src="" alt="Hero Random2">
-    </div>
+    <main>
+        <section class="hero-section">
+            <h2>Bienvenido a StickerMania</h2>
+            <p>
+                Encontrá stickers de películas, series, música y mucho más.
+                Diseños originales para personalizar notebooks, celulares,
+                cuadernos y todo lo que quieras.
+            </p>
+            <a href="product.html" class="btn">Ver catálogo</a>
+        </section>
 
-    <main class="product-grid">
-        <h2 class="ofertas">MEGA OFERTAS</h2>
+        <section class="product-grid">
+            <h2>Productos destacados</h2>
+            <article class="product-card">
+                <img src="./assets/StarWars.png" alt="Pack de stickers de Star Wars">
+                <h3>Star Wars</h3>
+            </article>
 
-        <div class="product-card" id="peliculas">
-            <img src="./assets/StarWars.png" alt="Sticker de Películas">
-            <h3>Star Wars Sticker Pack</h3>
-        </div>
+            <article class="product-card">
+                <img src="./assets/the-office.png" alt="Pack de stickers de The Office">
+                <h3>The Office</h3>
+            </article>
 
-        <div class="product-card" id="series">
-            <img src="./assets/the-office.png" alt="Sticker de Series">
-            <h3>The Office Stickers</h3>
-        </div>
-        
-        <div class="product-card" id="musica">
-            <img src="./assets/Rock.png" alt="Sticker de Música">
-            <h3>Rock Nacional</h3>
-        </div>
-        
-        <div class="product-card" id="ochentas">
-            <img src="./assets/Sticker80.png" alt="Sticker de los 80s">
-            <h3>Estilo Retro Pack</h3>
-        </div>
-        
+            <article class="product-card">
+                <img src="./assets/Rock.png" alt="Pack de stickers de Rock Nacional">
+                <h3>Rock Nacional</h3>
+            </article>
+
+            <article class="product-card">
+                <img src="./assets/Sticker80.png" alt="Pack de stickers estilo retro">
+                <h3>Retro</h3>
+            </article>
+        </section>
     </main>
-    
+
     <footer>
-        <p>2025 StickerMania. Proyecto INA 2025.</p>
+        <p>StickerMania. Proyecto INA 2025.</p>
     </footer>
 
     <script type="module" src="/js/script.js"></script>
 </body>
+
 </html>
