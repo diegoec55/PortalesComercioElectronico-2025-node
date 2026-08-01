@@ -2,199 +2,255 @@ const prisma = require("../config/prisma");
 
 // ---------------------------------------------------------
 async function list(req, res) {
-    let page = req?.query?.page || 1;
-    let limit = req?.query?.limit || 10;
-    page = parseInt(page);
-    limit = parseInt(limit);
-    const offset = (page - 1) * limit;
+    try {
+        let page = req?.query?.page || 1;
+        let limit = req?.query?.limit || 10;
+        page = parseInt(page);
+        limit = parseInt(limit);
 
-    const products = await prisma.productos.findMany({
-        where: {
-            OR: [
-                { nombre: { contains: req?.query?.search ?? "" } },
-                { descripcion: { contains: req?.query?.search ?? "" } },
-            ],
-        },
-        include: {
-            categorias: true,
-            etiquetas: true,
-        },
-        skip: offset, // cuantos tomamos por pagina
-        take: limit, // cuanto nos saltamos, del 0 a 5
-    });
+        const offset = (page - 1) * limit;
 
-    return res.send(products); // el send lo pasa como un json
+        const products = await prisma.productos.findMany({
+            where: {
+                OR: [
+                    { nombre: { contains: req?.query?.search ?? "" } },
+                    { descripcion: { contains: req?.query?.search ?? "" } },
+                ],
+            },
+            include: {
+                categorias: true,
+                etiquetas: true,
+            },
+            skip: offset, // cuantos tomamos por pagina
+            take: limit, // cuanto nos saltamos, del 0 a 5
+        });
+        return res.send(products); // el send lo pasa como un json
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "Error al obtener los productos"
+        });
+    }
 }
 
 // ---------------------------------------------------------
 async function get(req, res) {
-    const { slug } = req.params;
+    try {
+        const { slug } = req.params;
 
-    const product = await prisma.productos.findUnique({
-        where: { slug: slug },
-        include: {
-            categorias: true,
-            etiquetas: true,
-        },
-    });
+        const product = await prisma.productos.findUnique({
+            where: { slug: slug },
+            include: {
+                categorias: true,
+                etiquetas: true,
+            },
+        });
 
-    if (!product) {
-        return res.status(404).send({ msg: "Producto no encontrado" });
+        if (!product) {
+            return res.status(404).send({ msg: "Producto no encontrado" });
+        }
+
+        return res.send(product); // el send lo pasa como un json
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "Error al obtener el producto"
+        });
     }
-
-    return res.send(product); // el send lo pasa como un json
 }
 
 // ---------------------------------------------------------
 async function create(req, res) {
-    const data = req.body;
-    const files = req.files;
+    try {
+        const data = req.body;
+        const files = req.files;
 
-    // Buscar o crear la categoría
-
-    const categoria = await prisma.categorias.findFirst({
-        where: { nombre: data.categoria },
-    });
-
-    let categoria_id = categoria ? categoria.id : null;
-
-    if (!categoria) {
-        const nuevaCategoria = await prisma.categorias.create({
-            data: {
-                nombre: data.categoria,
-            },
-        });
-
-        categoria_id = nuevaCategoria.id;
-    }
-
-    // Asignar etiquetas si se proporcionan
-
-    let etiquetaIds = [];
-
-    if (data["etiquetas"] && Array.isArray(data["etiquetas"])) {
-        for (const etiqueta of data["etiquetas"]) {
-            let select = await prisma.etiquetas.findUnique({
-                where: { nombre: etiqueta.trim() },
+        const newProduct = await prisma.$transaction(async (tx) => {
+            
+            // Buscar o crear la categoría
+            let categoria = await tx.categorias.findFirst({
+                where: { nombre: data.categoria },
             });
 
-            if (!select) {
-                select = await prisma.etiquetas.create({
-                    data: { nombre: etiqueta.trim() },
+            if (!categoria) {
+                categoria = await tx.categorias.create({
+                    data: {
+                        nombre: data.categoria,
+                    },
                 });
             }
 
-            etiquetaIds.push({ id: select.id });
-        }
+            // Buscar o crear etiquetas
+            const etiquetaIds = [];
+
+            if (data.etiquetas && Array.isArray(data.etiquetas)) {
+                for (const etiqueta of data.etiquetas) {
+                    let tag = await tx.etiquetas.findUnique({
+                        where: { nombre: etiqueta.trim() },
+                    });
+
+                    if (!tag) {
+                        tag = await tx.etiquetas.create({
+                            data: { nombre: etiqueta.trim() },
+                        });
+                    }
+
+                    etiquetaIds.push({ id: tag.id });
+                }
+            }
+
+            // Crear el producto
+            return await tx.productos.create({
+
+                data: {
+                    nombre: data.nombre,
+                    slug: data.slug,
+                    descripcion: data.descripcion,
+                    precio: parseFloat(data.precio),
+                    categoria_id: categoria_id,
+                    imagen_url: files?.length
+                        ? `/uploads/${files[0].filename}`
+                        : null,
+                    etiquetas: { connect: etiquetaIds },
+                    // etiquetas: { set: etiquetaIds || [] },
+                },
+                include: {
+                    categorias: true,
+                    etiquetas: true,
+                },
+            });
+        });
+
+        return res.send(newProduct);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "Error al crear el producto"
+        });
     }
-
-    // Crear el producto
-
-    const newProduct = await prisma.productos.create({
-        data: {
-            nombre: data.nombre,
-            slug: data.slug,
-            descripcion: data.descripcion,
-            precio: parseFloat(data.precio),
-            categoria_id: parseInt(categoria_id),
-            imagen_url: files ? `/uploads/${files[0].filename}` : null,
-            etiquetas: { connect: etiquetaIds },
-            // etiquetas: { set: etiquetaIds || [] },
-        },
-        include: {
-            categorias: true,
-            etiquetas: true,
-        },
-    });
-
-    res.send(newProduct);
 }
 
 // ---------------------------------------------------------
 async function update(req, res) {
-    const { slug } = req.params;
-    const data = req.body;
-    const files = req.files;
+    try {
+        const { slug } = req.params;
+        const data = req.body;
+        const files = req.files;
 
-    // Buscar o crear la categoría
-
-    const categoria = await prisma.categorias.findFirst({
-        where: { nombre: data.categoria },
-    });
-
-    let categoria_id = categoria ? categoria.id : null;
-
-    if (!categoria) {
-        const nuevaCategoria = await prisma.categorias.create({
-            data: {
-                nombre: data.categoria,
-            },
+        // Verificar que el producto exista
+        const product = await prisma.productos.findUnique({
+            where: { slug },
         });
 
-        categoria_id = nuevaCategoria.id;
-    }
+        if (!product) {
+            return res.status(404).json({
+                error: true,
+                message: "Producto no encontrado",
+            });
+        }
 
-    // Asignar etiquetas si se proporcionan
-
-    let etiquetaIds = [];
-
-    if (data["etiquetas"] && Array.isArray(data["etiquetas"])) {
-        for (const etiqueta of data["etiquetas"]) {
-            let select = await prisma.etiquetas.findUnique({
-                where: { nombre: etiqueta.trim() },
+        const upProduct = await prisma.$transaction(async (tx) => {
+            
+            // Buscar o crear la categoría
+            let categoria = await tx.categorias.findFirst({
+                where: { nombre: data.categoria },
             });
 
-            if (!select) {
-                select = await prisma.etiquetas.create({
-                    data: { nombre: etiqueta.trim() },
+            if (!categoria) {
+                categoria = await tx.categorias.create({
+                    data: {
+                        nombre: data.categoria,
+                    },
                 });
             }
 
-            etiquetaIds.push({ id: select.id });
-        }
+            // Buscar o crear etiquetas
+            let etiquetaIds = [];
+
+            if (data.etiquetas && Array.isArray(data.etiquetas)) {
+                for (const etiqueta of data.etiquetas) {
+
+                    let select = await tx.etiquetas.findUnique({
+                        where: { nombre: etiqueta.trim() },
+                    });
+
+                    if (!select) {
+                        select = await tx.etiquetas.create({
+                            data: { nombre: etiqueta.trim() },
+                        });
+                    }
+
+                    etiquetaIds.push({ id: select.id });
+                }
+            }
+
+            return await tx.productos.update({
+                where: { slug: slug },
+                data: {
+                    nombre: data.nombre || product.nombre,
+                    slug: data.slug || product.slug,
+                    descripcion: data.descripcion || product.descripcion,
+                    precio: data.precio !== undefined
+                        ? parseFloat(data.precio)
+                        : product.precio,
+                    categoria_id: categoria.id,
+                    imagen_url: files?.length
+                        ? `/uploads/${files[0].filename}`
+                        : product.imagen_url,
+                    etiquetas: { set: etiquetaIds },
+                },
+                include: {
+                    categorias: true,
+                    etiquetas: true,
+                },
+            });
+        });
+        res.send(upProduct);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "Error al actualizar el producto"
+        });
     }
-
-    // Crear el producto
-
-    const product = await prisma.productos.findUnique({
-        where: { slug: slug },
-    });
-
-    const upProduct = await prisma.productos.update({
-        where: { slug: slug },
-        data: {
-            nombre: data.nombre || product.nombre,
-            slug: data.slug || product.slug,
-            descripcion: data.descripcion || product.descripcion,
-            precio: parseFloat(data.precio) || product.precio,
-            categoria_id: parseInt(categoria_id) || product.categoria_id,
-            imagen_url: files ? `/uploads/${files[0].filename}` : product.imagen_url,
-            etiquetas: { set: etiquetaIds || [] },
-        },
-        include: {
-            categorias: true,
-            etiquetas: true,
-        },
-    });
-
-    res.send(upProduct);
 }
 
 // ---------------------------------------------------------
 async function remove(req, res) {
-    const { slug } = req.params;
+    try {
+        const { slug } = req.params;
 
-    await prisma.productos.delete({
-        where: { slug: slug },
-    });
+        const product = await prisma.productos.findUnique({
+            where: { slug },
+        });
 
-    res.send({ deleted: true });
+        if (!product) {
+            return res.status(404).json({
+                error: true,
+                message: "Producto no encontrado"
+            });
+        }
+
+        await prisma.productos.delete({
+            where: { slug },
+        });
+
+        res.send({ deleted: true });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "Error al eliminar el producto"
+        });
+    }
 }
 
-module.exports = {
-    list,
-    get,
-    create,
-    update,
-    remove,
-};
+module.exports = { list, get, create, update, remove, };
