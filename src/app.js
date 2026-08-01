@@ -20,7 +20,7 @@ app.use(express.static(join(__dirname, "../public")));
 const productoRoutes = require("./routes/producto.routes");
 const usuarioRoutes = require("./routes/usuario.routes");
 const comprasRoutes = require("./routes/compras.routes");
-const categoriaRouter = require("./routers/categoria.router");
+const categoriaRouter = require("./routes/categoria.routes");
 
 app.use("/api/productos", productoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
@@ -29,7 +29,7 @@ app.use("/api/categorias", categoriaRouter);
 
 // ruta principal
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'))
+    res.sendFile(join(__dirname, '../public/index.html'))
 })
 
 app.listen(app.get("port"), () => {

@@ -6,6 +6,7 @@ import {
     getCart,
     setCart
 } from "./helpers.js";
+import { initLayout, initMenu } from "./layout.js";
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
@@ -29,7 +30,7 @@ function mostrarProducto(producto) {
     main.innerHTML = `
         <article class="detalle">
             <img
-                src="${producto.imagen_url || "./assets/no-image.png"}"
+                src="${producto.imagen_url ?? "./assets/no-image.png"}"
                 alt="${producto.nombre}"
             >
 
@@ -43,7 +44,7 @@ function mostrarProducto(producto) {
             ${isAdmin() ? `<button id="eliminarProducto">Eliminar producto</button>` : ""}
         </article>
     `;
-    document.getElementById("agregarCarrito").addEventListener("click", agregarCarrito);
+    document.getElementById("agregarCarrito").addEventListener("click", () => agregarCarrito(producto));
 
     if (isAdmin()) {
         document.getElementById("eliminarProducto").addEventListener("click", eliminarProducto);
@@ -59,7 +60,10 @@ function agregarCarrito() {
         existe.cantidad++;
     } else {
         carrito.push({
-            slug,
+            slug: producto.slug,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            imagen_url: producto.imagen_url,
             cantidad: 1
         });
     }
@@ -75,9 +79,15 @@ async function eliminarProducto() {
     }
 
     try {
-        await sendJsonData(`/api/productos/${slug}`,"DELETE");
-        alert("Producto eliminado.");
-        location.href = "product.html";
+        const resultado = await sendJsonData(`/api/productos/${slug}`,"DELETE");
+
+        if (resultado.error) {
+            alert(resultado.message);
+            return;
+        }
+
+        alert("Producto eliminado correctamente.");
+        window.location.href = "product.html";
 
     } catch (error) {
         console.error(error);
@@ -85,15 +95,11 @@ async function eliminarProducto() {
     }
 }
 
-// ---------------- Menú ----------------
-const nav = document.getElementById("nav");
+document.addEventListener("DOMContentLoaded", async () => {
+    
+    // ---------------- Menú ----------------
+    initLayout();
+    initMenu();
 
-document.getElementById("abrir").addEventListener("click", () => {
-        nav.classList.add("visible");
-    });
-
-document.getElementById("cerrar").addEventListener("click", () => {
-        nav.classList.remove("visible");
-    });
-
-cargarProducto();
+    await cargarProducto();
+});

@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle del Producto</title>
+    <link href="https://cdn.boxicons.com/3.0.6/fonts/basic/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/product-detail.css">
 </head>
 
 <body>
     <header>
         <div class="buttonNavContainer">
-            <button id="abrir" class="buttonNav" aria-label="Abrir menú">
+            <button id="abrir" class="buttonNav" aria-label="Abrir menú" aria-expanded="false">
                 <i class='bxr bx-menu' style="font-size:2.5rem;color:white;"></i>
             </button>
         </div>
+
+        <h1>StickerMania</h1>
     
-        <nav class="main-nav" id="nav">
+        <nav class="main-nav" id="nav" aria-label="Menú principal">
             <div class="buttonNavContainerX">
                 <button id="cerrar" class="buttonNavX" aria-label="Cerrar menú">
                     <i class='bxr bx-x' style="font-size:2.5rem;color:white;"></i>
@@ -30,12 +33,16 @@
             <a id="logoutLink" href="#" hidden>Cerrar sesión</a>
         </nav>
     
-        <h1>StickerMania</h1>
+        <p>Detalle del producto</p>
     </header>
 
     <main id="detalleProducto">
-
+        <!-- Se completa desde product-detail.js -->
     </main>
+
+    <footer>
+        <p>StickerMania © 2025</p>
+    </footer>
 
     <script type="module" src="/js/product-detail.js"></script>
 </body>

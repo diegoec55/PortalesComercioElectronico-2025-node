@@ -1,25 +1,79 @@
-document.getElementById("formProducto").addEventListener("submit", async (e) => {
+import {sendFormData, sendQuery, isAdmin} from "./helpers.js";
+
+if (!isAdmin()) {
+    alert("No tiene permisos para acceder.");
+    window.location.href = "index.html";
+}
+
+const formulario = document.getElementById("formProducto");
+const categoriaSelect = document.getElementById("categoria");
+
+// -------------------------------------------------
+async function cargarCategorias() {
+    try {
+        const categorias = await sendQuery("/api/categorias");
+        categorias.forEach(categoria => {
+            const option = document.createElement("option");
+            option.value = categoria.nombre;
+            option.textContent = categoria.nombre;
+            categoriaSelect.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error(error);
+        alert("No fue posible cargar las categorías.");
+    }
+
+}
+
+// -------------------------------------------------
+formulario.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const form = new FormData();
+    const etiquetas = document
+        .getElementById("etiquetas")
+        .value
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(tag => tag !== "");
 
-    form.append("nombre", document.getElementById("nombre").value);
-    form.append("slug", document.getElementById("slug").value);
-    form.append("descripcion", document.getElementById("descripcion").value);
-    form.append("precio", document.getElementById("precio").value);
+    try {
+        const data = {
+            nombre: document.getElementById("nombre").value,
+            slug: document.getElementById("slug").value,
+            descripcion: document.getElementById("descripcion").value,
+            precio: document.getElementById("precio").value,
+            categoria: categoriaSelect.value,
+            etiquetas,
+            imagen: document.getElementById("imagen").files[0] ?? null
+        };
 
-    const file = document.getElementById("imagen").files[0];
-    if (file) form.append("imagen", file);
+        if (!categoriaSelect.value) {
+            alert("Debe seleccionar una categoría.");
+            return;
+        }
 
-    const resp = await fetch("/api/productos", {
-        method: "POST",
-        body: form
-    });
+        const resultado = await sendFormData(
+            "/api/productos",
+            "POST",
+            data
+        );
 
-    if (resp.ok) {
-        alert("Producto creado exitosamente");
-        window.location.href = "index.html";
-    } else {
-        alert("Error al crear el producto");
+        if (resultado.error) {
+            alert(resultado.message);
+            return;
+        }
+
+        alert("Producto creado correctamente.");
+        window.location.href = "product.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("No fue posible crear el producto.");
     }
+});
+
+// -------------------------------------------------
+document.addEventListener("DOMContentLoaded", async () => {
+    await cargarCategorias();
 });
