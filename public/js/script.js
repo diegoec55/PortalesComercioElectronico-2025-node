@@ -1,6 +1,7 @@
+import { isLogged } from "./helpers.js";
 console.log("index cargado correctamente");
 
-const usuario = JSON.parse(localStorage.getItem("usuario"));
+const usuario = isLogged();
 const loginLink = document.getElementById("loginLink");
 const registerLink = document.getElementById("registerLink");
 const logoutLink = document.getElementById("logoutLink");

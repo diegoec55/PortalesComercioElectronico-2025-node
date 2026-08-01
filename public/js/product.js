@@ -1,52 +1,101 @@
-let productos = [];
+import { sendQuery, currency, isLogged, isAdmin } from "./helpers.js";
+
 const contenedor = document.getElementById("productos");
 const busqueda = document.getElementById("busqueda");
 const categoria = document.getElementById("categoria");
 
+let productos = [];
 
+// ----------------------------------------------
 async function cargarProductos() {
-    const res = await fetch("http://localhost:3000/api/productos/");  
-    productos = await res.json();
+    try {
+        productos = await sendQuery("/api/productos");
+        mostrarProductos(productos);
 
-    console.log(JSON.stringify(productos,null,4));
-    
-    mostrarProductos(productos);
+    } catch (error) {
+        console.error(error);
+        contenedor.innerHTML = `<p>No fue posible cargar los productos.</p>`;
+    }
 }
 
+// ----------------------------------------------
 function mostrarProductos(lista) {
     contenedor.innerHTML = "";
-    lista.forEach(p => {
-        const link = document.createElement("a");
 
-        link.href = `/product-detail.html?slug=${p.slug}`;  // BUSCAR slug
-        link.className = "card";
+    if (lista.length === 0) {
+        contenedor.innerHTML = `<p>No se encontraron productos.</p>`;
+        return;
+    }
 
-        const img = document.createElement("img");
-        img.src = p.imagen_url;
+    lista.forEach(producto => {
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = `product-detail.html?slug=${producto.slug}`;  // BUSCAR slug
 
-        const nombre = document.createElement("h3");
-        nombre.textContent = p.nombre;
+        card.innerHTML = `
+            <img
+                src="${producto.imagen_url ?? "./assets/no-image.png"}"
+                alt="${producto.nombre}"
+            >
+            <h3>${producto.nombre}</h3>
+            <p>${currency(producto.precio)}</p>
+            <small>
+                ${producto.categorias?.nombre ?? "Sin categoría"}
+            </small>
+        `;
 
-        const precio = document.createElement("p");
-        precio.textContent = `$${p.precio}`;
-        link.appendChild(img);
-        link.appendChild(nombre);
-        link.appendChild(precio);
-        contenedor.appendChild(link);
+        contenedor.appendChild(card);
     });
+}
+
+// ----------------------------------------------
+function filtrar() {
+    const texto = busqueda.value.toLowerCase();
+    const cat = categoria.value;
+
+    const filtrados = productos.filter(producto => {
+        const coincideNombre = producto.nombre.toLowerCase().includes(texto);
+        const coincideCategoria = cat === "todas" || producto.categorias?.nombre === cat;
+        return coincideNombre && coincideCategoria;
+    });
+    mostrarProductos(filtrados);
 }
 
 busqueda.addEventListener("input", filtrar);
 categoria.addEventListener("change", filtrar);
 
-function filtrar() {
-    const texto = busqueda.value.toLowerCase();
-    const cat = categoria.value;
-    const filtrados = productos.filter(p =>
-        p.nombre.toLowerCase().includes(texto) &&
-        (cat === "todas" || p.categoria === cat)
-    );
-    mostrarProductos(filtrados);
+//-------------------menuHambur
+const nav = document.getElementById("nav");
+const abrir = document.getElementById("abrir");
+const cerrar = document.getElementById("cerrar");
+
+abrir.addEventListener("click", () => {
+    nav.classList.add("visible");
+    abrir.setAttribute("aria-expanded", "true");
+});
+
+cerrar.addEventListener("click", () => {
+    nav.classList.remove("visible");
+    abrir.setAttribute("aria-expanded", "false");
+});
+
+//-------------------cargaCateg
+async function cargarCategorias() {
+    try {
+        const categorias = await sendQuery("/api/categorias");
+    
+        categorias.forEach(categoria => {
+            const option = document.createElement("option");
+            option.value = categoria.nombre;
+            option.textContent = categoria.nombre;
+
+            categoria.appendChild(option);
+        });
+        
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-cargarProductos()
+await cargarCategorias();
+await cargarProductos();

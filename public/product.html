@@ -8,37 +8,42 @@
 </head>
 
 <body>
-
     <header>
+        <h1>StickerMania</h1>
+
         <div class="buttonNavContainer">
-            <button id="abrir" class="buttonNav"><i class='bxr  bx-menu' style="font-size: 2.5rem;color:white;"></i></button>
+            <button id="abrir" class="buttonNav" aria-label="Abrir menú">
+                <i class='bxr bx-menu' style="font-size:2.5rem;color:white;"></i>
+            </button>
         </div>
-        <nav class="main-nav" id="nav">
+
+        <nav class="main-nav" id="nav" aria-label="Menú principal">
             <div class="buttonNavContainerX">
-                <button id="cerrar" class="buttonNavX"><i class='bxr  bx-x' style="font-size: 2.5rem;color:white;"></i> </button>
+                <button id="cerrar" class="buttonNavX" aria-label="Cerrar menú">
+                    <i class='bxr  bx-x' style="font-size: 2.5rem;color:white;"></i>
+                </button>
             </div>
             <a href="index.html">Inicio</a>
             <a href="cart.html">Carrito</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Registro</a>
-            <a href="product-create.html">Nuevo Producto</a>
-            <a href="user-create.html">Nuevo Usuario</a>
+            <a href="login.html" id="loginLink">Login</a>
+            <a href="register.html" id="registerLink">Registro</a>
+            <a href="#" id="logoutLink" hidden>Cerrar sesión</a>
         </nav>
         <h1 class="titleIndex">StickerMania</h1>
         <p>¡Decora tu vida con nuestros stickers únicos!</p>
     </header>
     
-    <h1>Catálogo de Stickers</h1>
     <main>
-        <input type="text" id="busqueda" placeholder="Buscar producto...">
+        <h2>Catálogo</h2>
+        <label for="busqueda">Buscar</label>
+        <input type="search" id="busqueda" placeholder="Buscar producto...">
+
+        <label for="categoria">Categoría</label>
         <select id="categoria">
             <option value="todas">Todas</option>
-            <option value="peliculas">Películas</option>
-            <option value="series">Series</option>
-            <option value="musica">Música</option>
         </select>
 
-        <div id="productos"></div>
+        <section id="productos" aria-label="Listado de productos"></section>
     </main>
 
     <footer>
