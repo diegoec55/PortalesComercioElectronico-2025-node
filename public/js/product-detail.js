@@ -1,36 +1,95 @@
+import {
+    sendQuery,
+    sendJsonData,
+    currency,
+    isAdmin,
+    getCart,
+    setCart
+} from "./helpers.js";
+
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
 
-fetch(`/api/productos/${slug}`)
-    .then(res => res.json())
-    .then(producto => {
-        document.querySelector("main").innerHTML = `
-            <img src="${producto.imagen_url}" alt="${producto.nombre}">
+const main = document.getElementById("detalleProducto");
+
+async function cargarProducto() {
+    try {
+        const producto = await sendQuery(`/api/productos/${slug}`);
+        mostrarProducto(producto);
+    } catch (error) {
+        console.error(error);
+        main.innerHTML = `<p>Error al cargar el producto.</p>`;
+    }
+
+}
+
+function mostrarProducto(producto) {
+    main.innerHTML = `
+        <article class="detalle">
+            <img
+                src="${producto.imagen_url || "./assets/no-image.png"}"
+                alt="${producto.nombre}"
+            >
+
             <h2>${producto.nombre}</h2>
-            <p><strong>Precio:</strong> $${producto.precio}</p>
-            <p><strong>Descripción:</strong> ${producto.descripcion}</p>
+            <p class="precio">${currency(producto.precio)}</p>
+            <p>${producto.descripcion}</p>
+            <p>
+                <strong>Categoría:</strong>${producto.categorias?.nombre ?? "Sin categoría"}
+            </p>
+            <button id="agregarCarrito">Agregar al carrito</button>
+            ${isAdmin() ? `<button id="eliminarProducto">Eliminar producto</button>` : ""}
+        </article>
+    `;
+    document.getElementById("agregarCarrito").addEventListener("click", agregarCarrito);
 
-            <button id="eliminar">Eliminar producto</button>
-        `;
+    if (isAdmin()) {
+        document.getElementById("eliminarProducto").addEventListener("click", eliminarProducto);
+    }
+}
 
-        const btnEliminar = document.getElementById("eliminar");
-        btnEliminar.addEventListener("click", async () => {
-            if (!confirm("¿Seguro deseas eliminar este producto?")) return;
+function agregarCarrito() {
+    let carrito = getCart();
+    const existe = carrito.find(item => item.slug === slug);
 
-            const resp = await fetch(`/api/productos/${slug}`, {
-                method: "DELETE"
-            });
-
-            if (resp.ok) {
-                alert("Producto eliminado correctamente");
-                window.location.href = "product.html";
-            } else {
-                alert("Error al eliminar el producto");
-            }
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push({
+            slug,
+            cantidad: 1
         });
+    }
+    setCart(carrito);
+    alert("Producto agregado al carrito.");
+}
 
-    })
-    .catch(err => {
-        document.querySelector("main").innerHTML = "<p>Error al cargar el producto</p>";
-        console.error(err);
+async function eliminarProducto() {
+
+    if (!confirm("¿Eliminar el producto?")) {
+        return;
+    }
+
+    try {
+        await sendJsonData(`/api/productos/${slug}`,"DELETE");
+        alert("Producto eliminado.");
+        location.href = "product.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("No fue posible eliminar el producto.");
+    }
+}
+
+// ---------------- Menú ----------------
+const nav = document.getElementById("nav");
+
+document.getElementById("abrir").addEventListener("click", () => {
+        nav.classList.add("visible");
     });
+
+document.getElementById("cerrar").addEventListener("click", () => {
+        nav.classList.remove("visible");
+    });
+
+cargarProducto();

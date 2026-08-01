@@ -8,17 +8,36 @@
 </head>
 
 <body>
-
     <header>
-        <h1>Detalle del Producto</h1>
-        <a href="product.html">Volver a productos</a>
+        <div class="buttonNavContainer">
+            <button id="abrir" class="buttonNav" aria-label="Abrir menú">
+                <i class='bxr bx-menu' style="font-size:2.5rem;color:white;"></i>
+            </button>
+        </div>
+    
+        <nav class="main-nav" id="nav">
+            <div class="buttonNavContainerX">
+                <button id="cerrar" class="buttonNavX" aria-label="Cerrar menú">
+                    <i class='bxr bx-x' style="font-size:2.5rem;color:white;"></i>
+                </button>
+            </div>
+    
+            <a href="index.html">Inicio</a>
+            <a href="product.html">Catálogo</a>
+            <a href="cart.html">Carrito</a>
+            <a id="loginLink" href="login.html">Login</a>
+            <a id="registerLink" href="register.html">Registro</a>
+            <a id="logoutLink" href="#" hidden>Cerrar sesión</a>
+        </nav>
+    
+        <h1>StickerMania</h1>
     </header>
 
-    <main>
+    <main id="detalleProducto">
 
     </main>
 
-    <script src="/js/product-detail.js"></script>
+    <script type="module" src="/js/product-detail.js"></script>
 </body>
 
 </html>
