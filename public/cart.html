@@ -4,17 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Carrito - StickerMania</title>
+    <link href="https://cdn.boxicons.com/3.0.6/fonts/basic/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/cart.css" />
 </head>
 
 <body>
-    <h1>Tu Carrito</h1>
+    <header>
+        <div class="buttonNavContainer">
+            <button id="abrir" class="buttonNav" aria-label="Abrir menú" aria-expanded="false">
+                <i class="bxr bx-menu" style="font-size:2.5rem;color:white;"></i>
+            </button>
+        </div>
 
-    <div id="carrito"></div>
+        <h1>StickerMania</h1>
 
-    <p>Total: $<span id="total">0</span></p>
+        <nav class="main-nav" id="nav">
+            <div class="buttonNavContainerX">
+                <button id="cerrar" class="buttonNavX" aria-label="Cerrar menú">
+                    <i class="bxr bx-x" style="font-size:2.5rem;color:white;"></i>
+                </button>
+            </div>
 
-    <script src="/js/cart.js"></script>
+            <a href="index.html">Inicio</a>
+            <a href="product.html">Catálogo</a>
+            <a id="loginLink" href="login.html">Login</a>
+            <a id="registerLink" href="register.html">Registro</a>
+            <a id="logoutLink" href="#" hidden>Cerrar sesión</a>
+        </nav>
+
+        <p>Tu carrito de compras</p>
+    </header>
+
+    <main>
+        <div id="carrito"></div>
+
+        <h2>
+            Total:
+            <span id="total"></span>
+        </h2>
+
+        <button id="comprar">Finalizar compra</button>
+    </main>
+
+    <script type="module" src="/js/cart.js"></script>
 </body>
 
 </html>
