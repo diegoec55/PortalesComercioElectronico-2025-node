@@ -6,6 +6,11 @@ formulario.addEventListener("submit", async (e) => {
     const email = document.getElementById("email").value.trim();
     const clave = document.getElementById("clave").value;
 
+    if (!email || !clave) {
+        alert("Complete todos los campos.");
+        return;
+    }
+
     try {
         const respuesta = await fetch("/api/usuarios/access", {
             method: "POST",
@@ -21,15 +26,12 @@ formulario.addEventListener("submit", async (e) => {
         const resultado = await respuesta.json();
 
         if (!respuesta.ok) {
-            alert(resultado.msg);
+            alert(resultado.message || resultado.msg);
             return;
         }
 
         // Guardamos el usuario logueado
-        localStorage.setItem(
-            "usuario",
-            JSON.stringify(resultado.data)
-        );
+        localStorage.setItem("usuario",JSON.stringify(resultado.data));
 
         alert("Login exitoso");
 

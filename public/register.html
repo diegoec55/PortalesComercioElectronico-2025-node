@@ -17,19 +17,27 @@
         <h2>Crear una cuenta</h2>
         <form id="registroForm">
             <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" required>
+            <input type="text" id="nombre" name="nombre" autocomplete="name" aria-required="true" required>
 
             <label for="email">Correo electrónico</label>
-            <input type="email" id="email" required>
+            <input type="email" id="email" name="email" autocomplete="email" aria-required="true" required>
 
             <label for="clave">Contraseña</label>
-            <input type="password" id="clave" required>
+            <input type="password" id="clave" name="clave" autocomplete="new-password" minlength="8" aria-required="true" required>
+            <small>
+            Debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.
+            </small>
 
             <button type="submit" id="boton">Registrarse</button>
         </form>
 
-        <p>¿Ya tenés una cuenta?<a href="login.html">Iniciar sesión</a></p>
-        <p><a href="index.html">Volver al inicio</a></p>
+        <p>
+            ¿Ya tenés una cuenta?
+            <a href="login.html">Iniciar sesión</a>
+        </p>
+        <p>
+            <a href="index.html">Volver al inicio</a>
+        </p>
     </main>
 
     <script src="/js/register.js"></script>
