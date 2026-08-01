@@ -1,4 +1,8 @@
 const prisma = require("../config/prisma");
+const {
+    findOrCreateCategoria,
+    findOrCreateTags,
+} = require("../helpers/producto.helper");
 
 // ---------------------------------------------------------
 async function list(req, res) {
@@ -72,36 +76,10 @@ async function create(req, res) {
         const newProduct = await prisma.$transaction(async (tx) => {
             
             // Buscar o crear la categoría
-            let categoria = await tx.categorias.findFirst({
-                where: { nombre: data.categoria },
-            });
-
-            if (!categoria) {
-                categoria = await tx.categorias.create({
-                    data: {
-                        nombre: data.categoria,
-                    },
-                });
-            }
+            const categoria_id = await findOrCreateCategoria(tx, data.categoria);
 
             // Buscar o crear etiquetas
-            const etiquetaIds = [];
-
-            if (data.etiquetas && Array.isArray(data.etiquetas)) {
-                for (const etiqueta of data.etiquetas) {
-                    let tag = await tx.etiquetas.findUnique({
-                        where: { nombre: etiqueta.trim() },
-                    });
-
-                    if (!tag) {
-                        tag = await tx.etiquetas.create({
-                            data: { nombre: etiqueta.trim() },
-                        });
-                    }
-
-                    etiquetaIds.push({ id: tag.id });
-                }
-            }
+            const etiquetaIds = await findOrCreateTags(tx, data.etiquetas);
 
             // Crear el producto
             return await tx.productos.create({
@@ -158,40 +136,13 @@ async function update(req, res) {
         const upProduct = await prisma.$transaction(async (tx) => {
             
             // Buscar o crear la categoría
-            let categoria = await tx.categorias.findFirst({
-                where: { nombre: data.categoria },
-            });
-
-            if (!categoria) {
-                categoria = await tx.categorias.create({
-                    data: {
-                        nombre: data.categoria,
-                    },
-                });
-            }
+            const categoria_id = await findOrCreateCategoria(tx, data.categoria);
 
             // Buscar o crear etiquetas
-            let etiquetaIds = [];
-
-            if (data.etiquetas && Array.isArray(data.etiquetas)) {
-                for (const etiqueta of data.etiquetas) {
-
-                    let select = await tx.etiquetas.findUnique({
-                        where: { nombre: etiqueta.trim() },
-                    });
-
-                    if (!select) {
-                        select = await tx.etiquetas.create({
-                            data: { nombre: etiqueta.trim() },
-                        });
-                    }
-
-                    etiquetaIds.push({ id: select.id });
-                }
-            }
+            const etiquetaIds = await findOrCreateTags(tx, data.etiquetas);
 
             return await tx.productos.update({
-                where: { slug: slug },
+                where: { slug },
                 data: {
                     nombre: data.nombre || product.nombre,
                     slug: data.slug || product.slug,
@@ -199,7 +150,7 @@ async function update(req, res) {
                     precio: data.precio !== undefined
                         ? parseFloat(data.precio)
                         : product.precio,
-                    categoria_id: categoria.id,
+                    categoria_id: categoria_id,
                     imagen_url: files?.length
                         ? `/uploads/${files[0].filename}`
                         : product.imagen_url,

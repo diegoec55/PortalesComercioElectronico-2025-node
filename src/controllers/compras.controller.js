@@ -140,7 +140,7 @@ async function create(req, res) {
                         orden_id: orden.id,
                         producto_id: item.id,
                         cantidad: item.cantidad,
-                        precio_unitario: item.precio,
+                        precio_unitario: Number(item.precio),
                     },
                 });
             }
@@ -223,11 +223,13 @@ async function remove(req, res) {
             });
         }
 
-        // Primero eliminar los items
-        await prisma.items.deleteMany({where: {orden_id: id,},});
+        await prisma.$transaction(async (tx) => {
+            // Primero eliminar los items
+            await tx.items.deleteMany({where: {orden_id: id,},});
 
-        // Luego eliminar la orden
-        await prisma.ordenes.delete({where: {id,},});
+            // Luego eliminar la orden
+            await tx.ordenes.delete({where: {id,},});
+        });
 
         return res.json({deleted: true,});
         
