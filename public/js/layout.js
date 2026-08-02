@@ -3,11 +3,11 @@ import { isLogged, isAdmin } from "./helpers.js";
 //----------------------------------------------------
 export function initLayout() {
     const usuario = isLogged();
+    const admin = isAdmin();
+    
     const login = document.getElementById("loginLink");
     const registro = document.getElementById("registerLink");
     const logout = document.getElementById("logoutLink");
-
-    const adminMenu = document.getElementById("adminMenu");
 
     if (!login || !registro || !logout) return;
 
@@ -24,16 +24,17 @@ export function initLayout() {
     }
 
     // Mostrar opciones de administrador
-    if (isAdmin()) {
-        if (adminProduct) adminProduct.hidden = false;
-        if (adminUsers) adminUsers.hidden = false;
+    if (adminMenu) {
+        adminMenu.hidden = !isAdmin();
     }
 
-    logout.addEventListener("click", e => {
-        e.preventDefault();
-        localStorage.removeItem("usuario");
-        location.href = "index.html";
-    });
+    if (logout) {
+        logout.addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.removeItem("usuario");
+            location.href = "index.html";
+        });
+    }
 }
 
 //----------------------------------------------------

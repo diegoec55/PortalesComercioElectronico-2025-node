@@ -1,6 +1,7 @@
 import {
     isLogged,
     sendQuery,
+    sendJsonData,
     currency
 } from "./helpers.js";
 import { initLayout, initMenu } from "./layout.js";
@@ -65,7 +66,7 @@ function mostrarCompras(lista) {
     lista.forEach(compra => {
         const div = document.createElement("article");
         div.className = "compra";
-        div.innerHTML = `<h3>Compra #${compra.id}</h3>
+        div.innerHTML = `
             <p>Fecha: ${new Date(compra.created_at).toLocaleDateString("es-AR")}</p>
             <p>Total: ${currency(Number(compra.total))}</p>
             <h4>Productos:</h4>
@@ -89,6 +90,30 @@ function mostrarCompras(lista) {
         compras.appendChild(div);
     });
 }
+
+//---------------------------------------------------------
+document.getElementById("eliminarCuenta").addEventListener("click", async () => {
+
+        if (!confirm("¿Seguro que desea eliminar su cuenta? Esta acción no puede deshacerse.")) {
+            return;
+        }
+        const usuario = JSON.parse(localStorage.getItem("usuario"));
+        const resultado = await sendJsonData(
+            `/api/usuarios/${usuario.id}`,
+            "DELETE"
+        );
+
+        if (resultado.error) {
+            alert(resultado.message);
+            return;
+        }
+
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("carrito");
+
+        alert("Su cuenta fue eliminada.");
+        window.location.href = "index.html";
+    });
 
 //---------------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {

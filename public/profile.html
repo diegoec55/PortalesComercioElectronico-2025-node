@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mi perfil</title>
     <link href="https://cdn.boxicons.com/3.0.6/fonts/basic/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/profile.css">
 </head>
 
@@ -31,6 +32,9 @@
             <a id="loginLink" href="login.html">Login</a>
             <a id="registerLink" href="register.html">Registro</a>
             <a id="logoutLink" href="#" hidden aria-label="Cerrar sesión">Cerrar sesión</a>
+            <div id="adminMenu" hidden>
+                <a href="product-create.html">Nuevo producto</a>
+            </div>
         </nav>
 
         <p>Mi perfil</p>
@@ -38,6 +42,7 @@
 
     <main>
         <section id="datosUsuario"></section>
+        <button id="eliminarCuenta">Eliminar mi cuenta</button>
 
         <section>
             <h2>Mis compras</h2>

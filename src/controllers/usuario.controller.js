@@ -163,4 +163,74 @@ async function save(req, res) {
     }
 }
 
-module.exports = { access, profile, save, };
+// ---------------------------------------------------------
+async function remove(req, res) {
+    try {
+        const id = Number(req.params.id);
+
+        if (isNaN(id)) {
+            return res.status(400).json({
+                error: true,
+                message: "ID inválido",
+            });
+        }
+        const usuario = await prisma.usuarios.findUnique({
+            where: { id }
+        });
+
+        if (!usuario) {
+            return res.status(404).json({
+                error: true,
+                message: "Usuario no encontrado",
+            });
+        }
+
+        await prisma.$transaction(async (tx) => {
+            // Obtener las órdenes del usuario
+            const ordenes = await tx.ordenes.findMany({
+                where: {
+                    usuario_id: id,
+                },
+                select: {
+                    id: true,
+                },
+            });
+
+            const ordenIds = ordenes.map(o => o.id);
+
+            if (ordenIds.length > 0) {
+                await tx.items.deleteMany({
+                    where: {
+                        orden_id: {
+                            in: ordenIds,
+                        },
+                    },
+                });
+                await tx.ordenes.deleteMany({
+                    where: {
+                        usuario_id: id,
+                    },
+                });
+            }
+            await tx.usuarios.delete({
+                where: {
+                    id,
+                },
+            });
+        });
+
+        return res.json({
+            error: false,
+            message: "Cuenta eliminada correctamente."
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "No fue posible eliminar la cuenta."
+        });
+    }
+}
+
+module.exports = { access, profile, save, remove };

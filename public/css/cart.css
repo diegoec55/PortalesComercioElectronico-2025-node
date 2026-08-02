@@ -1,22 +1,53 @@
-body {
-    font-family: Arial;
-    text-align: center;
-}
-
-h1 {
-    color: white;
-    border-radius: 8px;
-    margin: 0;
-    padding: 15px;
-    background-color: #222;
+main {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .item {
-    border: 1px solid #ccc;
-    margin: 10px;
-    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+h3, .precio {
+    margin: 20px;
 }
 
 button {
-    margin: 5px;
+    background: #ff7b00;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: large;
+    padding: 15px;
+}
+
+h3 {
+    margin: 0;
+    color: black;
+    text-align: center;
+}
+
+.precio {
+    color: green;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+}
+
+.menos, .mas {
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 40px;
+    width: 40px;
+    background-color: black;
+}
+
+span {
+    font-size: x-large;
 }

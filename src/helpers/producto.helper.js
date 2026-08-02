@@ -24,21 +24,29 @@ async function findOrCreateTags(db, tags) {
 
     const etiquetaIds = [];
 
-    if (!tags || !Array.isArray(tags)) {
+    if (!tags) {
         return etiquetaIds;
     }
 
+    // Si viene una sola etiqueta, la convertimos en un array
+    if (!Array.isArray(tags)) {
+        tags = [tags];
+    }
+
     for (const tag of tags) {
+        const nombre = tag.trim();
+        if (!nombre) continue;
+
         let etiqueta = await db.etiquetas.findUnique({
             where: {
-                nombre: tag.trim(),
+                nombre,
             },
         });
 
         if (!etiqueta) {
             etiqueta = await db.etiquetas.create({
                 data: {
-                    nombre: tag.trim(),
+                    nombre,
                 },
             });
         }

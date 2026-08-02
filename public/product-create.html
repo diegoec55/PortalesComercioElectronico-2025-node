@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo Producto</title>
+    <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/product-create.css">
 </head>
 
@@ -14,7 +15,7 @@
         <p>¡Decora tu vida con nuestros stickers únicos!</p>
     </header>
 
-    <h2>Nuevo Producto</h2>
+    <h2 id="tituloFormulario">Nuevo Producto</h2>
 
     <form id="formProducto" enctype="multipart/form-data">
         <label for="nombre">Nombre</label>
@@ -35,17 +36,24 @@
         </select>
 
         <label for="etiquetas">Etiquetas (separadas por comas)</label>
-        <input type="text" id="etiquetas" placeholder="Marvel, Avengers, Comics">
+        <input type="text" id="etiquetas" name="etiquetas" placeholder="Marvel, Avengers, Comics">
 
         <label for="imagen">Imagen</label>
         <input type="file" id="imagen" name="imagen" accept="image/*">
 
-        <button type="submit">Crear producto</button>
+        <label>Vista previa</label>
+        <img id="previewImagen" src="./assets/no-image.png" alt="Vista previa del producto" class="preview-imagen">
+
+        <button id="btnGuardar" type="submit">Crear producto</button>
     </form>
 
     <p>
         <a class="volver" href="product.html">Volver al catálogo</a>
     </p>
+
+    <footer>
+        <p>StickerMania. Proyecto INA 2025.</p>
+    </footer>
 
     <script type="module" src="/js/product-create.js"></script>
 </body>

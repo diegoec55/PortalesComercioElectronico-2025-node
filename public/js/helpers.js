@@ -38,32 +38,54 @@ export function formatDate(dateString) {
 }
 
 export async function sendFormData(url = "", method = "POST", data = {}) {
-    let body = new FormData();
+    const body = new FormData();
     for (const key in data) {
-        body.append(key, data[key]);
+        if (Array.isArray(data[key])) {
+            data[key].forEach(valor => {
+                body.append(key, valor);
+            });
+        } else if (data[key] !== null && data[key] !== undefined) {
+            body.append(key, data[key]);
+        }
     }
-    const response = await fetch(url, {
+    const usuario = isLogged();
+    const options = {
         method,
         body,
-    });
+    };
+    if (usuario) {
+        options.headers = {
+            Authorization: usuario.id,
+        };
+    }
+
+    const response = await fetch(url, options);
     return response.json();
 }
 
-export async function sendJsonData(url = "", method = "POST", data = {}) {
-    let body = JSON.stringify(data);
-    const response = await fetch(url, {
+export async function sendJsonData(url = "", method = "POST", data = null) {
+    const usuario = isLogged();
+    const options = {
         method,
         headers: {
             "Content-Type": "application/json",
-        },
-        body,
-    });
+        }
+    };
+    
+    if (usuario) {
+        options.headers.Authorization = usuario.id;
+    }
+
+    if (data) {
+        options.body = JSON.stringify(data);
+    }
+    const response = await fetch(url, options);
     return response.json();
 }
 
-export async function sendQuery(url = "", data = {}) {
-    let params = data ? new URLSearchParams(data).toString() : null;
-    const response = await fetch(`${url}${params ? `?${params}` : ""}`, {
+export async function sendQuery(url = "", params = null) {
+    const query = params ? new URLSearchParams(params).toString() : null;
+    const response = await fetch(`${url}${query ? `?${query}` : ""}`, {
         method: "GET",
     });
     return response.json();

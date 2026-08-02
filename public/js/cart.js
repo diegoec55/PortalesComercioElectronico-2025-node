@@ -39,7 +39,7 @@ function render() {
                 alt="${producto.nombre}"
             >
             <h3>${producto.nombre}</h3>
-            <p>${currency(producto.precio)}</p>
+            <p class="precio">${currency(producto.precio)}</p>
             <div>
                 <button class="menos">−</button>
                 <span>${producto.cantidad}</span>

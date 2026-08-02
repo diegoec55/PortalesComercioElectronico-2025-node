@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - StickerMania</title>
+    <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/login.css">
 </head>
 <body>
@@ -12,21 +13,27 @@
         <p>¡Decora tu vida con nuestros stickers únicos!</p>
     </header>
 
-    <h2>Iniciar Sesión</h2>
-    <form id="loginForm">
-        <label for="email">Correo electrónico</label>
-        <input type="email" id="email" required>
-
-        <label for="clave">Contraseña</label>
-        <input type="password" id="clave" required>
-
-        <button type="submit" id="boton">Ingresar</button>
-    </form>
+    <main>
+        <h2>Iniciar Sesión</h2>
+        <form id="loginForm">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" required>
     
-    <a class="volver" href="index.html">Volver al Inicio</a>
+            <label for="clave">Contraseña</label>
+            <input type="password" id="clave" required>
+    
+            <button type="submit" id="boton">Ingresar</button>
+        </form>
+        
+        <a class="volver" href="index.html">Volver al Inicio</a>
+    
+        <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+    </main>
 
-    <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
-
+    <footer>
+        <p>StickerMania. Proyecto INA 2025.</p>
+    </footer>
+    
     <script type="module" src="/js/login.js"></script>
 </body>
 

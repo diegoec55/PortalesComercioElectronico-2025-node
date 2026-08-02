@@ -41,18 +41,21 @@ function mostrarProducto(producto) {
                 <strong>Categoría:</strong>${producto.categorias?.nombre ?? "Sin categoría"}
             </p>
             <button id="agregarCarrito">Agregar al carrito</button>
-            ${isAdmin() ? `<button id="eliminarProducto">Eliminar producto</button>` : ""}
+            ${isAdmin() ? `
+                <button id="editarProducto">Editar producto</button>
+                <button id="eliminarProducto">Eliminar producto</button>` : ""}
         </article>
     `;
     document.getElementById("agregarCarrito").addEventListener("click", () => agregarCarrito(producto));
 
     if (isAdmin()) {
+        document.getElementById("editarProducto").addEventListener("click", editarProducto);
         document.getElementById("eliminarProducto").addEventListener("click", eliminarProducto);
     }
 }
 
 //-------------------------------------------------------------
-function agregarCarrito() {
+function agregarCarrito(producto) {
     let carrito = getCart();
     const existe = carrito.find(item => item.slug === slug);
 
@@ -70,6 +73,11 @@ function agregarCarrito() {
     }
     setCart(carrito);
     alert("Producto agregado al carrito.");
+}
+
+//-------------------------------------------------------------
+function editarProducto() {
+    window.location.href =`product-create.html?slug=${slug}`;
 }
 
 //-------------------------------------------------------------
