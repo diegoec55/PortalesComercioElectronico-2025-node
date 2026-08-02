@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo - StickerMania</title>
+    <link href='https://cdn.boxicons.com/3.0.6/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/product.css">
 </head>
 
 <body>
     <header>
-        <h1>StickerMania</h1>
+        <h1 class="titleIndex">StickerMania</h1>
 
         <div class="buttonNavContainer">
             <button id="abrir" class="buttonNav" aria-label="Abrir menú">
@@ -28,9 +30,10 @@
             <a href="login.html" id="loginLink">Login</a>
             <a href="register.html" id="registerLink">Registro</a>
             <a href="#" id="logoutLink" hidden>Cerrar sesión</a>
+            <div id="adminMenu" hidden>
+                <a href="product-create.html">Nuevo producto</a>
+            </div>
         </nav>
-        <h1 class="titleIndex">StickerMania</h1>
-        <p>¡Decora tu vida con nuestros stickers únicos!</p>
     </header>
     
     <main>

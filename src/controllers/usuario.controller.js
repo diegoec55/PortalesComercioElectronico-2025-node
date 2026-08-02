@@ -68,7 +68,11 @@ async function profile(req, res) {
             include: {
                 ordenes: {
                     include: {
-                        items: true,
+                        items: {
+                            include: {
+                                producto: true,
+                            },
+                        },
                     },
                 },
             },
