@@ -164,6 +164,123 @@ async function save(req, res) {
 }
 
 // ---------------------------------------------------------
+async function update(req, res) {
+    try {
+        const id = Number(req.params.id);
+        const authId = Number(req.headers.authorization);
+        const data = req.body;
+
+        if (isNaN(id)) {
+            return res.status(400).json({
+                error: true,
+                message: "ID inválido",
+            });
+        }
+
+        // Verificar que exista un usuario autenticado
+        if (!authId || isNaN(authId)) {
+            return res.status(401).json({
+                error: true,
+                message: "No autorizado",
+            });
+        }
+
+        // El usuario solo puede editar su propia cuenta
+        if (authId !== id) {
+            return res.status(403).json({
+                error: true,
+                message: "No tiene permiso para editar esta cuenta",
+            });
+        }
+
+        const usuario = await prisma.usuarios.findUnique({
+            where: { id },
+        });
+
+        if (!usuario) {
+            return res.status(404).json({
+                error: true,
+                message: "Usuario no encontrado",
+            });
+        }
+
+        if (!data.nombre || !data.email) {
+            return res.status(400).json({
+                error: true,
+                message: "Nombre y email son obligatorios",
+            });
+        }
+
+        const regxEmail =
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!regxEmail.test(data.email)) {
+            return res.status(400).json({
+                error: true,
+                message: "Email no válido",
+            });
+        }
+
+        const emailNormalizado = data.email.trim().toLowerCase();
+
+        // Verificar si el nuevo email pertenece a otro usuario
+        const existingUser = await prisma.usuarios.findUnique({
+            where: {
+                email: emailNormalizado,
+            },
+        });
+
+        if (existingUser && existingUser.id !== id) {
+            return res.status(400).json({
+                error: true,
+                message: "El email ya está registrado",
+            });
+        }
+
+        const updateData = {
+            nombre: data.nombre.trim(),
+            email: emailNormalizado,
+        };
+
+        // La contraseña es opcional al editar
+        if (data.clave) {
+            const regexClave =
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+            if (!regexClave.test(data.clave)) {
+                return res.status(400).json({
+                    error: true,
+                    message:
+                        "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+                });
+            }
+
+            updateData.clave = await bcrypt.hash(data.clave, 10);
+        }
+
+        const updatedUser = await prisma.usuarios.update({
+            where: { id },
+            data: updateData,
+        });
+
+        delete updatedUser.clave;
+
+        return res.status(200).json({
+            error: false,
+            message: "Perfil actualizado correctamente",
+            data: updatedUser,
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "Error al actualizar el perfil",
+        });
+    }
+}
+
+// ---------------------------------------------------------
 async function remove(req, res) {
     try {
         const id = Number(req.params.id);
@@ -233,4 +350,4 @@ async function remove(req, res) {
     }
 }
 
-module.exports = { access, profile, save, remove };
+module.exports = { access, profile, save, update, remove };

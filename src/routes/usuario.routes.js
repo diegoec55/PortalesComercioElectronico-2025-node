@@ -5,12 +5,23 @@ const {
     access,
     save,
     profile,
+    update,
     remove
 } = require("../controllers/usuario.controller");
 
-router.get("/:id", profile);
-router.post("/", save);
+// Iniciar sesión
 router.post("/access", access);
+
+// Registrar usuario
+router.post("/", save);
+
+// Obtener perfil
+router.get("/:id", profile);
+
+// Actualizar perfil
+router.put("/:id", update);
+
+// Eliminar cuenta
 router.delete("/:id", remove);
 
 module.exports = router;

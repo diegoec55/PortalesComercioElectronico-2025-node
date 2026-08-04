@@ -8,6 +8,7 @@ import { initLayout, initMenu } from "./layout.js";
 
 const datosUsuario = document.getElementById("datosUsuario");
 const compras = document.getElementById("compras");
+const botonEliminar = document.getElementById("eliminarCuenta");
 
 //---------------------------------------------------------
 async function cargarPerfil() {
@@ -67,24 +68,26 @@ function mostrarCompras(lista) {
         const div = document.createElement("article");
         div.className = "compra";
         div.innerHTML = `
-            <p>Fecha: ${new Date(compra.created_at).toLocaleDateString("es-AR")}</p>
-            <p>Total: ${currency(Number(compra.total))}</p>
-            <h4>Productos:</h4>
+            <p><strong>Fecha:</strong> ${compra.created_at
+                ? new Date(compra.created_at).toLocaleDateString("es-AR")
+                : "Sin fecha"}</p>
+            <p><strong>Total:</strong> ${currency(Number(compra.total))}</p>
+            <h3>Productos:</h3>
 
             <ul>
                 ${compra.items.map(item => `
                         <li>
-                            ${item.producto.nombre}
+                            ${item.producto.nombre ?? "Producto no disponible"}
                             -
                             ${item.cantidad} unidad/es
                             -
                             ${currency(
-                                Number(item.precio_unitario) *
-                                item.cantidad
-                            )}
+                    Number(item.precio_unitario) *
+                    item.cantidad
+                )}
                         </li>
                     `).join("")
-                }
+            }
             </ul>
         `;
         compras.appendChild(div);
@@ -92,12 +95,24 @@ function mostrarCompras(lista) {
 }
 
 //---------------------------------------------------------
-document.getElementById("eliminarCuenta").addEventListener("click", async () => {
+botonEliminar.addEventListener("click", async () => {
+    const usuario = isLogged();
 
-        if (!confirm("¿Seguro que desea eliminar su cuenta? Esta acción no puede deshacerse.")) {
-            return;
-        }
-        const usuario = JSON.parse(localStorage.getItem("usuario"));
+    if (!usuario) {
+        alert("Debe iniciar sesión.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    const confirmacion = confirm(
+        "¿Seguro que desea eliminar su cuenta? Esta acción no puede deshacerse."
+    );
+
+    if (!confirmacion) {
+        return;
+    }
+
+    try {
         const resultado = await sendJsonData(
             `/api/usuarios/${usuario.id}`,
             "DELETE"
@@ -113,12 +128,17 @@ document.getElementById("eliminarCuenta").addEventListener("click", async () => 
 
         alert("Su cuenta fue eliminada.");
         window.location.href = "index.html";
-    });
+
+    } catch (error) {
+        console.error(error);
+        alert("No fue posible eliminar la cuenta.");
+    }
+});
 
 //---------------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
-        initLayout();
-        initMenu();
-        await cargarPerfil();
-    }
+    initLayout();
+    initMenu();
+    await cargarPerfil();
+}
 );

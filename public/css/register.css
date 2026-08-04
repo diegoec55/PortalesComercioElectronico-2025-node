@@ -44,7 +44,7 @@ button:hover {
     cursor: pointer;
 }
 
-.volver {
+#volverLink {
     background-color: white;
     font-size: medium;
     text-decoration: none;
@@ -55,7 +55,7 @@ button:hover {
     margin: 5px;
 }
 
-.volver:hover {
+#volverLink:hover {
     background-color: rgb(97, 134, 187);
     cursor: pointer;
 }
